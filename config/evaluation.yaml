@@ -1,0 +1,11 @@
+thresholds:
+  answer_relevancy: 0.80
+  faithfulness: 0.85
+  max_hallucination_rate: 0.05
+
+  latency:
+    p95_max_ms: 5000
+    max_regression_percent: 20
+
+  cost:
+    max_mean_per_query_usd: 0.02
