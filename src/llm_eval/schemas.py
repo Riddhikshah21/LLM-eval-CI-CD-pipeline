@@ -9,3 +9,8 @@ class GoldenExample(BaseModel):
     should_abstain: bool = False
     category: str
     tags: list[str] = Field(default_factory=list)
+
+class RetrievedDocument(BaseModel):
+    source: str
+    content: str
+    score: float
