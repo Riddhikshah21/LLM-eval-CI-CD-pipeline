@@ -5,3 +5,12 @@ model:
 
 rag:
   top_k: 3
+
+  sparse_top_k: 10
+  dense_top_k: 10
+
+  embedding_model: text-embedding-3-small
+
+  rrf_k: 60
+  sparse_weight: 0.5
+  dense_weight: 0.5

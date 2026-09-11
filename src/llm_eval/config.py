@@ -13,6 +13,15 @@ class ModelSettings(BaseModel):
 class RAGSettings(BaseModel):
     top_k: int = Field(default=3, gt=0)
 
+    sparse_top_k: int = Field(default=10, gt=0)
+    dense_top_k: int = Field(default=10, gt=0)
+
+    embedding_model: str = "text-embedding-3-small"
+
+    rrf_k: int = Field(default=60, gt=0)
+
+    sparse_weight: float = Field(default=0.5, ge=0.0)
+    dense_weight: float = Field(default=0.5, ge=0.0)
 
 class ModelConfig(BaseModel):
     model: ModelSettings
