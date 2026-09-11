@@ -2,8 +2,9 @@ from pathlib import Path
 
 from llm_eval.config import load_model_config
 from llm_eval.llm_client import OpenAIClient
-from llm_eval.schemas import PipelineResult
 from llm_eval.retrieval.factory import create_hybrid_retriever
+from llm_eval.schemas import PipelineResult
+
 
 class RAGPipeline:
     def __init__(self) -> None:
@@ -36,13 +37,10 @@ class RAGPipeline:
             for doc in documents
         )
 
-        user_prompt = f"""
-Context:
-{context}
-
-Question:
-{question}
-""".strip()
+        user_prompt = (
+            f"Context:\n{context}\n\n"
+            f"Question:\n{question}"
+        )
 
         response = self.llm.generate(
             system_prompt=self.system_prompt,
@@ -53,10 +51,12 @@ Question:
             question=question,
             answer=response.text,
             retrieved_context=[
-                doc.content for doc in documents
+                document.content
+                for document in documents
             ],
             retrieved_sources=[
-                doc.source for doc in documents
+                document.source
+                for document in documents
             ],
             input_tokens=response.input_tokens,
             output_tokens=response.output_tokens,
