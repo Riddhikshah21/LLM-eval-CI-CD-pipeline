@@ -1,5 +1,6 @@
 import time
 
+from langfuse import observe
 from openai import OpenAI
 
 from llm_eval.schemas import LLMResponse
@@ -15,6 +16,7 @@ class OpenAIClient:
         self.model = model
         self.temperature = temperature
 
+    @observe(name="llm-generation", as_type="generation")
     def generate(
         self,
         system_prompt: str,

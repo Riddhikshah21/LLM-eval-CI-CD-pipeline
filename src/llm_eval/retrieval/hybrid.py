@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from langfuse import observe
+
 from llm_eval.retrieval.bm25 import BM25Retriever
 from llm_eval.retrieval.dense import DenseRetriever
 from llm_eval.schemas import RetrievedDocument
@@ -27,6 +29,7 @@ class HybridRetriever:
         self.sparse_weight = sparse_weight
         self.dense_weight = dense_weight
 
+    @observe(name="hybrid-retrieval", as_type="retriever")
     def retrieve(
         self,
         query: str,
