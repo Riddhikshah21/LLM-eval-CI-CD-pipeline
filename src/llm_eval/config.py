@@ -43,9 +43,13 @@ class EvaluationThresholds(BaseModel):
     max_hallucination_rate: float = Field(ge=0, le=1)
     latency: LatencyThresholds
     cost: CostThresholds
+    correctness: float = Field(ge=0, le=1)
 
+class JudgeSettings(BaseModel):
+    model: str
 
 class EvaluationConfig(BaseModel):
+    judge: JudgeSettings
     thresholds: EvaluationThresholds
 
 

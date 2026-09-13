@@ -1,6 +1,10 @@
+judge:
+  model: gpt-5-nano
+
 thresholds:
   answer_relevancy: 0.80
   faithfulness: 0.85
+  correctness: 0.80
   max_hallucination_rate: 0.05
 
   latency:
