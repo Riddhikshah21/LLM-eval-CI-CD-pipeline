@@ -4,11 +4,15 @@ import yaml
 from pydantic import BaseModel, Field
 
 
+class PricingSettings(BaseModel):
+    input_per_1m_tokens_usd: float = Field(ge=0)
+    output_per_1m_tokens_usd: float = Field(ge=0)
+
 class ModelSettings(BaseModel):
     provider: str
     name: str
     temperature: float = Field(default=0.0, ge=0.0, le=2.0)
-
+    pricing: PricingSettings
 
 class RAGSettings(BaseModel):
     top_k: int = Field(default=3, gt=0)

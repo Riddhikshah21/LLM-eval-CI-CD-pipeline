@@ -1,7 +1,7 @@
 from pathlib import Path
 from time import perf_counter
 from typing import Any
-
+from llm_eval.cost import calculate_cost
 from langfuse import observe
 
 from llm_eval.config import load_model_config
@@ -20,7 +20,7 @@ class RAGSystem:
             config=config.rag,
             knowledge_base_path="knowledge_base",
         )
-
+        self.pricing = config.model.pricing
         self.llm = OpenAIClient(
             model=config.model.name,
             temperature=config.model.temperature,
@@ -63,12 +63,22 @@ class RAGSystem:
         total_latency_ms = (
             perf_counter() - start
         ) * 1000
-
+        cost_usd = calculate_cost(
+            input_tokens=response.input_tokens,
+            output_tokens=response.output_tokens,
+            input_per_1m_tokens_usd=(
+                self.pricing.input_per_1m_tokens_usd
+            ),
+            output_per_1m_tokens_usd=(
+                self.pricing.output_per_1m_tokens_usd
+            ),
+        )
         return SystemResult(
             response=response.text,
             latency_ms=total_latency_ms,
             input_tokens=response.input_tokens,
             output_tokens=response.output_tokens,
+            cost_usd=cost_usd,
             metadata={
                 "contexts": [
                     document.content
