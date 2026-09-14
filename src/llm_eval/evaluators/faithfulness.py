@@ -3,29 +3,37 @@ from langfuse import Evaluation
 from llm_eval.evaluators.judge import LLMJudge
 
 
-def create_faithfulness_evaluator(judge: LLMJudge):
+def create_faithfulness_evaluator(
+    judge: LLMJudge,
+):
     def evaluator(
         *,
         input,
         output,
         **kwargs,
     ) -> Evaluation:
-        contexts = "\n\n".join(
-            output["contexts"]
+        contexts = output.get(
+            "metadata",
+            {},
+        ).get(
+            "contexts",
+            [],
         )
 
-        prompt = f"""
-Determine whether every factual claim in the answer is supported
-by the retrieved context.
+        context_text = "\n\n".join(contexts)
 
-Question:
-{input["question"]}
+        prompt = f"""
+Determine whether every factual claim in the response is
+supported by the retrieved context.
+
+Input:
+{input}
 
 Retrieved context:
-{contexts}
+{context_text}
 
-Answer:
-{output["answer"]}
+Response:
+{output["response"]}
 
 Return a score from 0 to 1.
 

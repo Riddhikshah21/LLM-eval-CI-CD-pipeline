@@ -3,7 +3,9 @@ from langfuse import Evaluation
 from llm_eval.evaluators.judge import LLMJudge
 
 
-def create_correctness_evaluator(judge: LLMJudge):
+def create_correctness_evaluator(
+    judge: LLMJudge,
+):
     def evaluator(
         *,
         input,
@@ -12,17 +14,17 @@ def create_correctness_evaluator(judge: LLMJudge):
         **kwargs,
     ) -> Evaluation:
         prompt = f"""
-Evaluate whether the candidate answer is factually consistent
-with the reference answer.
+Evaluate whether the candidate response is factually consistent
+with the reference response.
 
 Question:
 {input["question"]}
 
-Reference answer:
+Reference response:
 {expected_output["answer"]}
 
-Candidate answer:
-{output["answer"]}
+Candidate response:
+{output["response"]}
 
 Return a score from 0 to 1.
 

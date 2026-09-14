@@ -1,7 +1,9 @@
 from langfuse import Evaluation
 
 
-ABSTENTION_TEXT = "I don't have enough information to answer that question."
+ABSTENTION_TEXT = (
+    "I don't have enough information to answer that question."
+)
 
 
 def abstention_evaluator(
@@ -10,11 +12,17 @@ def abstention_evaluator(
     metadata,
     **kwargs,
 ) -> Evaluation:
-    should_abstain = metadata.get("should_abstain", False)
+    should_abstain = metadata.get(
+        "should_abstain",
+        False,
+    )
 
-    answer = output["answer"]
+    response = output["response"]
 
-    abstained = ABSTENTION_TEXT.lower() in answer.lower()
+    abstained = (
+        ABSTENTION_TEXT.lower()
+        in response.lower()
+    )
 
     passed = (
         abstained

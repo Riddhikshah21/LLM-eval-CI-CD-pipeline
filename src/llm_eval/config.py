@@ -23,10 +23,13 @@ class RAGSettings(BaseModel):
     sparse_weight: float = Field(default=0.5, ge=0.0)
     dense_weight: float = Field(default=0.5, ge=0.0)
 
+class ApplicationSettings(BaseModel):
+    type: str
+
 class ModelConfig(BaseModel):
+    application: ApplicationSettings
     model: ModelSettings
     rag: RAGSettings
-
 
 class LatencyThresholds(BaseModel):
     p95_max_ms: int = Field(gt=0)

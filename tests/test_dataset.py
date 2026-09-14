@@ -28,4 +28,7 @@ def test_load_golden_dataset() -> None:
 
     assert len(dataset) == 3
     assert dataset[0].id == "refund_001"
-    assert dataset[2].should_abstain is True
+    assert dataset[0].input["question"] == (
+        "How long do I have to return an item?"
+    )
+    assert dataset[2].metadata["should_abstain"] is True

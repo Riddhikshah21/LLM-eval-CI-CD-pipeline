@@ -3,7 +3,9 @@ from langfuse import Evaluation
 from llm_eval.evaluators.judge import LLMJudge
 
 
-def create_relevancy_evaluator(judge: LLMJudge):
+def create_relevancy_evaluator(
+    judge: LLMJudge,
+):
     def evaluator(
         *,
         input,
@@ -11,17 +13,17 @@ def create_relevancy_evaluator(judge: LLMJudge):
         **kwargs,
     ) -> Evaluation:
         prompt = f"""
-Evaluate how relevant the answer is to the user's question.
+Evaluate how relevant the response is to the user's input.
 
-Question:
-{input["question"]}
+Input:
+{input}
 
-Answer:
-{output["answer"]}
+Response:
+{output["response"]}
 
 Return a score from 0 to 1.
 
-1.0 = directly answers the question
+1.0 = directly relevant
 0.5 = partially relevant
 0.0 = irrelevant
 """.strip()
