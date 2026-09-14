@@ -11,27 +11,16 @@ def sync_dataset() -> None:
 
     langfuse.create_dataset(
         name=DATASET_NAME,
-        description="Golden dataset for LLM/RAG regression testing",
+        description="Golden dataset for AI application regression testing",
     )
 
-    examples = load_golden_dataset()
-
-    for example in examples:
+    for example in load_golden_dataset():
         langfuse.create_dataset_item(
             dataset_name=DATASET_NAME,
             id=example.id,
-            input={
-                "question": example.question,
-            },
-            expected_output={
-                "answer": example.expected_answer,
-            },
-            metadata={
-                "expected_sources": example.expected_sources,
-                "should_abstain": example.should_abstain,
-                "category": example.category,
-                "tags": example.tags,
-            },
+            input=example.input,
+            expected_output=example.expected_output,
+            metadata=example.metadata,
         )
 
     langfuse.flush()

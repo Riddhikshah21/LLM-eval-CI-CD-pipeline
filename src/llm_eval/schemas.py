@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-
+from typing import Any
 
 class Document(BaseModel):
     id: str
@@ -9,12 +9,14 @@ class Document(BaseModel):
 
 class GoldenExample(BaseModel):
     id: str
-    question: str
-    expected_answer: str | None = None
-    expected_sources: list[str] = Field(default_factory=list)
-    should_abstain: bool = False
-    category: str
-    tags: list[str] = Field(default_factory=list)
+
+    input: dict[str, Any]
+
+    expected_output: dict[str, Any] | None = None
+
+    metadata: dict[str, Any] = Field(
+        default_factory=dict
+    )
 
 class RetrievedDocument(BaseModel):
     id: str

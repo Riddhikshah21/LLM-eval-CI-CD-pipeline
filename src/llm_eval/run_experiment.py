@@ -10,7 +10,7 @@ from llm_eval.evaluators.judge import LLMJudge
 from llm_eval.evaluators.relevancy import create_relevancy_evaluator
 from llm_eval.pipeline import RAGPipeline
 from llm_eval.sync_dataset import DATASET_NAME
-
+from llm_eval.systems import create_system
 
 def run_experiment() -> None:
     langfuse = get_client()
@@ -27,19 +27,19 @@ def run_experiment() -> None:
     judge = LLMJudge(
         model=evaluation_config.judge.model
     )
-
+    system = create_system(
+        model_config.application.type
+    )
     def task(*, item, **kwargs):
-        question = item.input["question"]
-
-        result = pipeline.run(question)
+        result = system.run(item.input)
 
         return {
-            "answer": result.answer,
-            "contexts": result.retrieved_context,
-            "sources": result.retrieved_sources,
+            "response": result.response,
             "latency_ms": result.latency_ms,
             "input_tokens": result.input_tokens,
             "output_tokens": result.output_tokens,
+            "cost_usd": result.cost_usd,
+            "metadata": result.metadata,
         }
 
     git_sha = os.getenv(
