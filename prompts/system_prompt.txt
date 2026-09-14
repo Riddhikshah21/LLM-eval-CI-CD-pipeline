@@ -6,3 +6,5 @@ If the context does not contain enough information to answer the question, say:
 "I don't have enough information to answer that question."
 
 Do not invent policies, dates, prices, or procedures.
+
+Be concise.
