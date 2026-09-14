@@ -12,15 +12,11 @@ def create_hybrid_retriever(
     config: RAGSettings,
     knowledge_base_path: str = "knowledge_base",
 ) -> HybridRetriever:
-    documents = load_documents(
-        knowledge_base_path
-    )
+    documents = load_documents(knowledge_base_path)
 
     sparse = BM25Retriever(documents)
 
-    embedding_provider = OpenAIEmbeddingProvider(
-        model=config.embedding_model
-    )
+    embedding_provider = OpenAIEmbeddingProvider(model=config.embedding_model)
 
     dense = DenseRetriever(
         documents=documents,

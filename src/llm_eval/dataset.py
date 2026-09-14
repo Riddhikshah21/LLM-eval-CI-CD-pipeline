@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 
 from llm_eval.schemas import GoldenExample
@@ -19,8 +18,6 @@ def load_golden_dataset(
             if not line:
                 continue
 
-            examples.append(
-                GoldenExample.model_validate_json(line)
-            )
+            examples.append(GoldenExample.model_validate_json(line))
 
     return examples

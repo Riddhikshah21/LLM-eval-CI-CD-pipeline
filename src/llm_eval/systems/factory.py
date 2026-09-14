@@ -8,7 +8,4 @@ def create_system(
     if application_type == "rag":
         return RAGSystem()
 
-    raise ValueError(
-        f"Unsupported application type: "
-        f"{application_type}"
-    )
+    raise ValueError(f"Unsupported application type: {application_type}")

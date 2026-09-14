@@ -39,13 +39,9 @@ def test_hybrid_retrieval() -> None:
         score=0.9,
     )
 
-    sparse = FakeRetriever(
-        [refunds, shipping]
-    )
+    sparse = FakeRetriever([refunds, shipping])
 
-    dense = FakeRetriever(
-        [refunds, accounts]
-    )
+    dense = FakeRetriever([refunds, accounts])
 
     retriever = HybridRetriever(
         sparse_retriever=sparse,

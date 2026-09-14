@@ -91,6 +91,4 @@ class HybridRetriever:
         ):
             documents[result.id] = result
 
-            scores[result.id] += (
-                weight / (self.rrf_k + rank)
-            )
+            scores[result.id] += weight / (self.rrf_k + rank)

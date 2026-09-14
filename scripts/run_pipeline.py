@@ -4,9 +4,7 @@ from llm_eval.pipeline import RAGPipeline
 def main() -> None:
     pipeline = RAGPipeline()
 
-    result = pipeline.run(
-        "How long do I have to return an item?"
-    )
+    result = pipeline.run("How long do I have to return an item?")
 
     print("Answer:", result.answer)
     print("Sources:", result.retrieved_sources)

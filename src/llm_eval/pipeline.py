@@ -1,7 +1,8 @@
+import os
 from pathlib import Path
 
-import os
 from langfuse import observe, propagate_attributes
+
 from llm_eval.config import load_model_config
 from llm_eval.llm_client import OpenAIClient
 from llm_eval.retrieval.factory import create_hybrid_retriever
@@ -24,9 +25,9 @@ class RAGPipeline:
             temperature=config.model.temperature,
         )
 
-        self.system_prompt = Path(
-            "prompts/system_prompt.txt"
-        ).read_text(encoding="utf-8")
+        self.system_prompt = Path("prompts/system_prompt.txt").read_text(
+            encoding="utf-8"
+        )
 
     @observe(name="rag-pipeline", as_type="chain")
     def run(self, question: str) -> PipelineResult:
@@ -47,14 +48,10 @@ class RAGPipeline:
             )
 
             context = "\n\n".join(
-                f"Source: {doc.source}\n{doc.content}"
-                for doc in documents
+                f"Source: {doc.source}\n{doc.content}" for doc in documents
             )
 
-            user_prompt = (
-                f"Context:\n{context}\n\n"
-                f"Question:\n{question}"
-            )
+            user_prompt = f"Context:\n{context}\n\nQuestion:\n{question}"
 
             response = self.llm.generate(
                 system_prompt=self.system_prompt,
@@ -64,14 +61,8 @@ class RAGPipeline:
             return PipelineResult(
                 question=question,
                 answer=response.text,
-                retrieved_context=[
-                    document.content
-                    for document in documents
-                ],
-                retrieved_sources=[
-                    document.source
-                    for document in documents
-                ],
+                retrieved_context=[document.content for document in documents],
+                retrieved_sources=[document.source for document in documents],
                 input_tokens=response.input_tokens,
                 output_tokens=response.output_tokens,
                 latency_ms=response.latency_ms,

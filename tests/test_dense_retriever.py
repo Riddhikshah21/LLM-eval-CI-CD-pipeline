@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import numpy as np
 
 from llm_eval.retrieval.dense import DenseRetriever
@@ -5,8 +7,7 @@ from llm_eval.schemas import Document
 
 
 class FakeEmbeddingProvider:
-    
-    vectors = {
+    vectors: ClassVar[dict[str, list[float]]] = {
         "refund policy return item": [1.0, 0.0, 0.0],
         "shipping delivery package": [0.0, 1.0, 0.0],
         "password account reset": [0.0, 0.0, 1.0],

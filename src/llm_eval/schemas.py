@@ -1,11 +1,13 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
 
-from typing import Any
 
 class Document(BaseModel):
     id: str
     source: str
     content: str
+
 
 class GoldenExample(BaseModel):
     id: str
@@ -14,15 +16,15 @@ class GoldenExample(BaseModel):
 
     expected_output: dict[str, Any] | None = None
 
-    metadata: dict[str, Any] = Field(
-        default_factory=dict
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
 
 class RetrievedDocument(BaseModel):
     id: str
     source: str
     content: str
     score: float
+
 
 class LLMResponse(BaseModel):
     text: str
