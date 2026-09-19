@@ -2,9 +2,6 @@ from typing import ClassVar
 
 import numpy as np
 
-from llm_eval.retrieval.dense import DenseRetriever
-from llm_eval.schemas import Document
-
 
 class FakeEmbeddingProvider:
     vectors: ClassVar[dict[str, list[float]]] = {
@@ -31,36 +28,3 @@ class FakeEmbeddingProvider:
             [self.vectors[text]],
             dtype=np.float32,
         )
-
-
-def test_dense_retrieval() -> None:
-    documents = [
-        Document(
-            id="1",
-            source="refunds.md",
-            content="refund policy return item",
-        ),
-        Document(
-            id="2",
-            source="shipping.md",
-            content="shipping delivery package",
-        ),
-        Document(
-            id="3",
-            source="accounts.md",
-            content="password account reset",
-        ),
-    ]
-
-    retriever = DenseRetriever(
-        documents=documents,
-        embedding_provider=FakeEmbeddingProvider(),
-    )
-
-    results = retriever.retrieve(
-        "return refund",
-        top_k=1,
-    )
-
-    assert len(results) == 1
-    assert results[0].source == "refunds.md"

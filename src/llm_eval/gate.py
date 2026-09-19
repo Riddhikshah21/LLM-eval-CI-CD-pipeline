@@ -4,6 +4,9 @@ from pathlib import Path
 from llm_eval.config import load_evaluation_config
 
 REPORT_PATH = Path("reports/evaluation.json")
+from llm_eval.baseline import load_baseline, regression_percent
+
+BASELINE_PATH = Path("reports/baseline/evaluation.json")
 
 
 def run_gate() -> None:
@@ -59,6 +62,29 @@ def run_gate() -> None:
         maximum=thresholds.latency.p95_max_ms,
         unit="ms",
     )
+    baseline = load_baseline(BASELINE_PATH)
+
+    if baseline is not None:
+        baseline_p95 = baseline["metrics"]["latency"]["p95_ms"]
+        current_p95 = latency["p95_ms"]
+
+        if baseline_p95 is not None and current_p95 is not None:
+            latency_regression = regression_percent(
+                current=current_p95,
+                baseline=baseline_p95,
+            )
+
+            print(f"P95 baseline:      {baseline_p95:.2f} ms")
+            print(f"P95 regression:    {latency_regression:.2f}%")
+
+            if latency_regression > thresholds.latency.max_regression_percent:
+                failures.append(
+                    "p95 latency regression: "
+                    f"{latency_regression:.2f}% > "
+                    f"{thresholds.latency.max_regression_percent:.2f}%"
+                )
+    else:
+        print("Baseline: not available (regression check skipped)")
 
     # Cost is optional until cost calculation is implemented.
     if cost["mean_per_query_usd"] is not None:

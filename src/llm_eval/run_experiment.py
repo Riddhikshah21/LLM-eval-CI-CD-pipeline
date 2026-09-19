@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from langfuse import get_client
 
 from llm_eval.config import (
@@ -20,8 +21,17 @@ from llm_eval.systems import create_system
 REPORT_PATH = Path("reports/evaluation.json")
 
 
+load_dotenv()
+
 def run_experiment() -> None:
     langfuse = get_client()
+
+    if not langfuse.auth_check():
+        raise RuntimeError(
+            "Langfuse authentication failed. "
+            "Check LANGFUSE_PUBLIC_KEY, "
+            "LANGFUSE_SECRET_KEY, and LANGFUSE_BASE_URL."
+        )
 
     model_config = load_model_config()
     evaluation_config = load_evaluation_config()
