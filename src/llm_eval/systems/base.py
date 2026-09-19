@@ -11,14 +11,11 @@ class SystemResult(BaseModel):
     output_tokens: int = 0
     cost_usd: float | None = None
 
-    metadata: dict[str, Any] = Field(
-        default_factory=dict
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class SystemUnderTest(Protocol):
     def run(
         self,
         input_data: dict[str, Any],
-    ) -> SystemResult:
-        ...
+    ) -> SystemResult: ...

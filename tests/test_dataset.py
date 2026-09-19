@@ -16,9 +16,7 @@ def load_golden_dataset(
             if not line.strip():
                 continue
 
-            examples.append(
-                GoldenExample.model_validate(json.loads(line))
-            )
+            examples.append(GoldenExample.model_validate(json.loads(line)))
 
     return examples
 
@@ -28,7 +26,5 @@ def test_load_golden_dataset() -> None:
 
     assert len(dataset) == 3
     assert dataset[0].id == "refund_001"
-    assert dataset[0].input["question"] == (
-        "How long do I have to return an item?"
-    )
+    assert dataset[0].input["question"] == ("How long do I have to return an item?")
     assert dataset[2].metadata["should_abstain"] is True

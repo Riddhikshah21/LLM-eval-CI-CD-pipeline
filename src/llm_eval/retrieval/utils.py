@@ -20,16 +20,12 @@ def load_documents(
     path = Path(knowledge_base_path)
 
     if not path.exists():
-        raise FileNotFoundError(
-            f"Knowledge base path does not exist: {path}"
-        )
+        raise FileNotFoundError(f"Knowledge base path does not exist: {path}")
 
     files = sorted(path.glob("*.md"))
 
     if not files:
-        raise ValueError(
-            f"No Markdown documents found in {path}"
-        )
+        raise ValueError(f"No Markdown documents found in {path}")
 
     documents: list[Document] = []
 

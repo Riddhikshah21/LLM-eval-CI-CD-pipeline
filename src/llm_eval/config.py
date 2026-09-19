@@ -8,11 +8,13 @@ class PricingSettings(BaseModel):
     input_per_1m_tokens_usd: float = Field(ge=0)
     output_per_1m_tokens_usd: float = Field(ge=0)
 
+
 class ModelSettings(BaseModel):
     provider: str
     name: str
     temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     pricing: PricingSettings
+
 
 class RAGSettings(BaseModel):
     top_k: int = Field(default=3, gt=0)
@@ -27,13 +29,16 @@ class RAGSettings(BaseModel):
     sparse_weight: float = Field(default=0.5, ge=0.0)
     dense_weight: float = Field(default=0.5, ge=0.0)
 
+
 class ApplicationSettings(BaseModel):
     type: str
+
 
 class ModelConfig(BaseModel):
     application: ApplicationSettings
     model: ModelSettings
     rag: RAGSettings
+
 
 class LatencyThresholds(BaseModel):
     p95_max_ms: int = Field(gt=0)
@@ -52,8 +57,10 @@ class EvaluationThresholds(BaseModel):
     cost: CostThresholds
     correctness: float = Field(ge=0, le=1)
 
+
 class JudgeSettings(BaseModel):
     model: str
+
 
 class EvaluationConfig(BaseModel):
     judge: JudgeSettings

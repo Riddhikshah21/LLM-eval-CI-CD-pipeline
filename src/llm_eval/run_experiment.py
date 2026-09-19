@@ -17,7 +17,6 @@ from llm_eval.metrics import aggregate_metrics
 from llm_eval.sync_dataset import DATASET_NAME
 from llm_eval.systems import create_system
 
-
 REPORT_PATH = Path("reports/evaluation.json")
 
 
@@ -29,13 +28,9 @@ def run_experiment() -> None:
 
     dataset = langfuse.get_dataset(DATASET_NAME)
 
-    system = create_system(
-        model_config.application.type
-    )
+    system = create_system(model_config.application.type)
 
-    judge = LLMJudge(
-        model=evaluation_config.judge.model
-    )
+    judge = LLMJudge(model=evaluation_config.judge.model)
 
     git_sha = os.getenv(
         "GITHUB_SHA",
@@ -47,9 +42,7 @@ def run_experiment() -> None:
         "local",
     )
 
-    experiment_name = (
-        f"eval-{branch}-{git_sha[:8]}"
-    )
+    experiment_name = f"eval-{branch}-{git_sha[:8]}"
 
     def task(*, item, **kwargs) -> dict:
         result = system.run(item.input)
@@ -66,43 +59,27 @@ def run_experiment() -> None:
     try:
         result = dataset.run_experiment(
             name=experiment_name,
-            description=(
-                "AI application regression evaluation"
-            ),
+            description=("AI application regression evaluation"),
             task=task,
             evaluators=[
                 abstention_evaluator,
-                create_correctness_evaluator(
-                    judge
-                ),
-                create_relevancy_evaluator(
-                    judge
-                ),
-                create_faithfulness_evaluator(
-                    judge
-                ),
+                create_correctness_evaluator(judge),
+                create_relevancy_evaluator(judge),
+                create_faithfulness_evaluator(judge),
             ],
             metadata={
                 "git_sha": git_sha,
                 "branch": branch,
-                "application_type": (
-                    model_config.application.type
-                ),
+                "application_type": (model_config.application.type),
                 "model": model_config.model.name,
-                "judge_model": (
-                    evaluation_config.judge.model
-                ),
+                "judge_model": (evaluation_config.judge.model),
             },
             max_concurrency=3,
         )
 
         metrics = aggregate_metrics(
             item_results=result.item_results,
-            faithfulness_threshold=(
-                evaluation_config
-                .thresholds
-                .faithfulness
-            ),
+            faithfulness_threshold=(evaluation_config.thresholds.faithfulness),
         )
 
         report = {
@@ -110,16 +87,10 @@ def run_experiment() -> None:
                 "name": experiment_name,
                 "git_sha": git_sha,
                 "branch": branch,
-                "application_type": (
-                    model_config.application.type
-                ),
+                "application_type": (model_config.application.type),
                 "model": model_config.model.name,
-                "judge_model": (
-                    evaluation_config.judge.model
-                ),
-                "langfuse_url": (
-                    result.dataset_run_url
-                ),
+                "judge_model": (evaluation_config.judge.model),
+                "langfuse_url": (result.dataset_run_url),
             },
             "metrics": metrics,
         }
@@ -145,10 +116,7 @@ def run_experiment() -> None:
         )
 
         if result.dataset_run_url:
-            print(
-                "\nLangfuse experiment: "
-                f"{result.dataset_run_url}"
-            )
+            print(f"\nLangfuse experiment: {result.dataset_run_url}")
 
     finally:
         langfuse.flush()

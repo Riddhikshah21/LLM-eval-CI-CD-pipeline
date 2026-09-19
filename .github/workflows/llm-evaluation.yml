@@ -1,5 +1,9 @@
 name: LLM Evaluation
 
+permissions:
+  contents: read
+  actions: read
+  
 on:
   pull_request:
     branches:
@@ -55,8 +59,41 @@ jobs:
       - name: Run LLM evaluation
         run: uv run python -m llm_eval.run_experiment
 
+      - name: Download main baseline
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p reports/baseline
+
+          RUN_ID=$(gh run list \
+            --workflow llm-evaluation.yml \
+            --branch main \
+            --event push \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId')
+
+          if [ -n "$RUN_ID" ]; then
+            gh run download "$RUN_ID" \
+              --name baseline-report \
+              --dir reports/baseline \
+              || echo "No baseline artifact available yet"
+          else
+            echo "No successful main run found"
+          fi
+
       - name: Run evaluation gate
         run: uv run python -m llm_eval.gate
+
+      - name: Save main baseline
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-report
+          path: reports/evaluation.json
+          retention-days: 90
 
       - name: Upload evaluation report
         if: always()

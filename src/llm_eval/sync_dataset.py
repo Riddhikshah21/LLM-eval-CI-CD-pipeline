@@ -2,7 +2,6 @@ from langfuse import get_client
 
 from llm_eval.dataset import load_golden_dataset
 
-
 DATASET_NAME = "llm-evaluation-golden"
 
 

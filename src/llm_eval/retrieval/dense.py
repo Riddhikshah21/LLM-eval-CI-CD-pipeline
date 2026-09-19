@@ -11,14 +11,12 @@ class EmbeddingProvider(Protocol):
     def embed_documents(
         self,
         texts: list[str],
-    ) -> np.ndarray:
-        ...
+    ) -> np.ndarray: ...
 
     def embed_query(
         self,
         text: str,
-    ) -> np.ndarray:
-        ...
+    ) -> np.ndarray: ...
 
 
 class OpenAIEmbeddingProvider:
@@ -39,10 +37,7 @@ class OpenAIEmbeddingProvider:
         )
 
         vectors = np.asarray(
-            [
-                item.embedding
-                for item in response.data
-            ],
+            [item.embedding for item in response.data],
             dtype=np.float32,
         )
 
@@ -94,9 +89,7 @@ class DenseRetriever:
         if top_k <= 0:
             raise ValueError("top_k must be greater than zero")
 
-        query_embedding = (
-            self.embedding_provider.embed_query(query)
-        )
+        query_embedding = self.embedding_provider.embed_query(query)
 
         faiss.normalize_L2(query_embedding)
 

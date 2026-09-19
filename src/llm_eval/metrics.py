@@ -34,49 +34,30 @@ def aggregate_metrics(
                 continue
 
             if evaluation.name in scores:
-                scores[evaluation.name].append(
-                    float(evaluation.value)
-                )
+                scores[evaluation.name].append(float(evaluation.value))
 
             if evaluation.name == "faithfulness":
-                faithfulness_score = float(
-                    evaluation.value
-                )
+                faithfulness_score = float(evaluation.value)
 
         if (
             faithfulness_score is not None
-            and faithfulness_score
-            < faithfulness_threshold
+            and faithfulness_score < faithfulness_threshold
         ):
             hallucinated += 1
 
-    faithfulness_count = len(
-        scores["faithfulness"]
-    )
+    faithfulness_count = len(scores["faithfulness"])
 
     hallucination_rate = (
-        hallucinated / faithfulness_count
-        if faithfulness_count
-        else None
+        hallucinated / faithfulness_count if faithfulness_count else None
     )
 
     return {
         "quality": {
-            "correctness": _average(
-                scores["correctness"]
-            ),
-            "answer_relevancy": _average(
-                scores["answer_relevancy"]
-            ),
-            "faithfulness": _average(
-                scores["faithfulness"]
-            ),
-            "abstention_accuracy": _average(
-                scores["abstention_accuracy"]
-            ),
-            "hallucination_rate": (
-                hallucination_rate
-            ),
+            "correctness": _average(scores["correctness"]),
+            "answer_relevancy": _average(scores["answer_relevancy"]),
+            "faithfulness": _average(scores["faithfulness"]),
+            "abstention_accuracy": _average(scores["abstention_accuracy"]),
+            "hallucination_rate": (hallucination_rate),
         },
         "latency": {
             "p50_ms": _percentile(
@@ -89,14 +70,8 @@ def aggregate_metrics(
             ),
         },
         "cost": {
-            "mean_per_query_usd": (
-                _average(costs)
-            ),
-            "total_usd": (
-                float(sum(costs))
-                if costs
-                else None
-            ),
+            "mean_per_query_usd": (_average(costs)),
+            "total_usd": (float(sum(costs)) if costs else None),
         },
         "total_examples": len(item_results),
     }
