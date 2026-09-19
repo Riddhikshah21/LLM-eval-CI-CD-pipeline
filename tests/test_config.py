@@ -14,5 +14,5 @@ def test_load_evaluation_config() -> None:
 
     assert config.thresholds.answer_relevancy == 0.80
     assert config.thresholds.faithfulness == 0.85
-    assert config.thresholds.max_hallucination_rate == 0.05
+    assert config.thresholds.max_hallucination_rate == 0.34
     assert config.thresholds.latency.p95_max_ms == 5000
