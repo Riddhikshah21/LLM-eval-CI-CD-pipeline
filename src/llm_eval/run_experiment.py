@@ -16,12 +16,22 @@ from llm_eval.evaluators.relevancy import create_relevancy_evaluator
 from llm_eval.metrics import aggregate_metrics
 from llm_eval.sync_dataset import DATASET_NAME
 from llm_eval.systems import create_system
+from dotenv import load_dotenv
 
 REPORT_PATH = Path("reports/evaluation.json")
 
 
+load_dotenv()
+
 def run_experiment() -> None:
     langfuse = get_client()
+
+    if not langfuse.auth_check():
+        raise RuntimeError(
+            "Langfuse authentication failed. "
+            "Check LANGFUSE_PUBLIC_KEY, "
+            "LANGFUSE_SECRET_KEY, and LANGFUSE_BASE_URL."
+        )
 
     model_config = load_model_config()
     evaluation_config = load_evaluation_config()

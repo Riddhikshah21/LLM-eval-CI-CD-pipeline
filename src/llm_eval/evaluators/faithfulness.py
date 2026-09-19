@@ -2,6 +2,8 @@ from langfuse import Evaluation
 
 from llm_eval.evaluators.judge import LLMJudge
 
+ABSTENTION_TEXT = "I don't have enough information to answer that question."
+
 
 def create_faithfulness_evaluator(
     judge: LLMJudge,
@@ -10,36 +12,49 @@ def create_faithfulness_evaluator(
         *,
         input,
         output,
+        metadata,
         **kwargs,
     ) -> Evaluation:
-        contexts = output.get(
-            "metadata",
-            {},
-        ).get(
-            "contexts",
-            [],
-        )
+        response = output["response"]
+
+        # An expected abstention contains no unsupported factual claim.
+        if metadata.get("should_abstain", False):
+            abstained = ABSTENTION_TEXT.lower() in response.lower()
+
+            return Evaluation(
+                name="faithfulness",
+                value=1.0 if abstained else 0.0,
+                comment=(
+                    "Correctly abstained."
+                    if abstained
+                    else "Expected abstention but model answered."
+                ),
+            )
+
+        contexts = output.get("metadata", {}).get("contexts", [])
 
         context_text = "\n\n".join(contexts)
 
         prompt = f"""
-Determine whether every factual claim in the response is
+Evaluate whether every factual claim in the response is
 supported by the retrieved context.
 
-Input:
-{input}
+Question:
+{input["question"]}
 
 Retrieved context:
 {context_text}
 
 Response:
-{output["response"]}
+{response}
 
-Return a score from 0 to 1.
+Scoring:
+1.0 = every factual claim is explicitly supported
+0.5 = some claims are supported but others are unsupported
+0.0 = the response contradicts the context or invents facts
 
-1.0 = all claims supported
-0.5 = partially supported
-0.0 = unsupported or contradictory
+Do not penalize concise wording or paraphrasing.
+Judge factual support only.
 """.strip()
 
         result = judge.evaluate(prompt)
