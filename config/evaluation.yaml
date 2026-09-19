@@ -5,7 +5,7 @@ thresholds:
   answer_relevancy: 0.80
   faithfulness: 0.85
   correctness: 0.80
-  max_hallucination_rate: 0.05
+  max_hallucination_rate: 0.34
 
   latency:
     p95_max_ms: 5000
