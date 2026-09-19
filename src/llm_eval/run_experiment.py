@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from langfuse import get_client
 
 from llm_eval.config import (
@@ -16,7 +17,6 @@ from llm_eval.evaluators.relevancy import create_relevancy_evaluator
 from llm_eval.metrics import aggregate_metrics
 from llm_eval.sync_dataset import DATASET_NAME
 from llm_eval.systems import create_system
-from dotenv import load_dotenv
 
 REPORT_PATH = Path("reports/evaluation.json")
 
